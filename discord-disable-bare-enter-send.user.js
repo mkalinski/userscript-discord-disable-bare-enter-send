@@ -13,11 +13,23 @@
 (() => {
     'use strict';
 
-    // NOTE: This disables Enter on the entire website,
-    // not just in the text box. The selector for text box is not trivial.
-    // Maybe I'll implement it one day.
+    function isMessageBoxActive() {
+        // This is a best-effort guess.
+        const activeElem = document.activeElement;
+
+        return activeElem
+            && activeElem.role === 'textbox'
+            && activeElem.ariaMultiLine === 'true'
+            && activeElem.spellcheck;
+    }
+
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' && !event.ctrlKey && !event.shiftKey) {
+        if (
+            event.key === 'Enter'
+            && !event.ctrlKey
+            && !event.shiftKey
+            && isMessageBoxActive()
+        ) {
             event.stopPropagation();
         }
     }, {capture: true})
